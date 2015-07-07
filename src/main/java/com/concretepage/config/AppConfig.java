@@ -9,29 +9,34 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.concretepage.dao.IPersonDao;
 import com.concretepage.dao.PersonDao;
 import com.concretepage.entity.Person;
-  
-@Configuration
+import org.springframework.transaction.annotation.TransactionManagementConfigurer;
+
+//@Configuration
 @EnableTransactionManagement
-public class AppConfig {  
+public class AppConfig  implements TransactionManagementConfigurer{
 	@Bean  
     public IPersonDao personDao() {  
         return new PersonDao();  
     }
+
 	@Bean
 	public HibernateTemplate hibernateTemplate() {
 		return new HibernateTemplate(sessionFactory());
 	}
+
 	@Bean
 	public SessionFactory sessionFactory() {
 		return new LocalSessionFactoryBuilder(getDataSource())
 		   .addAnnotatedClasses(Person.class)
 		   .buildSessionFactory();
 	}
+
 	@Bean
 	public DataSource getDataSource() {
 	    BasicDataSource dataSource = new BasicDataSource();
@@ -42,9 +47,15 @@ public class AppConfig {
 	 
 	    return dataSource;
 	}
+
 	@Bean
 	public HibernateTransactionManager hibTransMan(){
 		return new HibernateTransactionManager(sessionFactory());
 	}
-}  
+
+	@Override
+	public PlatformTransactionManager annotationDrivenTransactionManager() {
+		return hibTransMan();
+	}
+}
  

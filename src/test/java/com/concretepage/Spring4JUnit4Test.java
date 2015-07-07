@@ -23,6 +23,7 @@ import com.concretepage.entity.Person;
 public class Spring4JUnit4Test {
   @Autowired
   private IPersonDao personDao;
+
   @Autowired
   private HibernateTemplate  hibernateTemplate;
   
