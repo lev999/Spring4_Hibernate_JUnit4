@@ -17,8 +17,8 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ApplConfig.class)
-@Transactional
-@TransactionConfiguration(defaultRollback = true)
+//@Transactional
+//@TransactionConfiguration(defaultRollback = true)
 public class MainFlowTest {
     @Autowired
     IStudentDAO studentDAO;
@@ -32,8 +32,10 @@ public class MainFlowTest {
         Student student = new Student();
         student.setName(name);
         studentDAO.saveStudent(student);
-        student = studentDAO.getStudentById(student.getId());
-        Assert.assertEquals("Check name of User in DB", student.getName(), name);
+        student.setName("non_name");
+        Student studentFromDB = hibernateTemplate.get(Student.class, student.getId());
+        Assert.assertEquals("Check name of User in DB", name, studentFromDB.getName());
+
 
     }
 }
